@@ -20,7 +20,7 @@ jobs:
     submodules: true
   - script: |
       if [ "$(Build.SourceBranch)" == "refs/heads/main" ]; then
-        echo "##vso[task.setvariable variable=SWA_ENV]Production"
+        echo "##vso[task.setvariable variable=SWA_ENV]"
         echo "Desplegando en el ambiente de: Producción"
       elif [ "$(Build.SourceBranch)" == "refs/heads/staging" ]; then
         echo "##vso[task.setvariable variable=SWA_ENV]staging"
