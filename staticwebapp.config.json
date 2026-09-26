@@ -1,15 +1,63 @@
 {
   "routes": [
     {
-      "route": "/admin/*",
-      "allowedRoles": ["administrador"]
+      "route": "/api/*",
+      "allowedRoles": ["authenticated"]
     },
     {
-      "route": "/api/cursos",
+      "route": "/api/me",
+      "methods": ["GET"],
+      "allowedRoles": ["authenticated"]
+    },
+    {
+      "route": "/.auth/login/aad",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/.auth/me",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/.auth/logout",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/*",
       "allowedRoles": ["authenticated"]
     }
   ],
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/images/*.{png,jpg,gif}", "/css/*", "/js/*", "/api/*"]
+  },
   "responseOverrides": {
-    "401": { "redirect": "/.auth/login/aad" }
+    "401": {
+      "redirect": "/.auth/login/aad?post_login_redirect_url=/",
+      "statusCode": 302
+    },
+    "403": {
+      "rewrite": "/unauthorized.html"
+    },
+    "404": {
+      "rewrite": "/index.html",
+      "statusCode": 200
+    }
+  },
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-XSS-Protection": "1; mode=block"
+  },
+  "mimeTypes": {
+    ".json": "application/json"
+  },
+  "identityProviders": {
+    "azureActiveDirectory": {
+      "registration": {
+        "openIdIssuer": "https://login.microsoftonline.com/6ccf8e16-6794-40a9-b9f4-82043aac1cb8/v2.0",
+        "clientIdSettingName": "AAD_CLIENT_ID",
+        "clientSecretSettingName": "AAD_CLIENT_SECRET"
+      }
+    }
   }
 }
