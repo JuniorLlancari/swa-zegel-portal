@@ -1,0 +1,39 @@
+# Node.js with React
+# Build a Node.js project that uses React.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- main
+- staging
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+- job: build_and_deploy_job
+  displayName: Build and Deploy Job
+  condition: or(eq(variables['Build.Reason'], 'Manual'),or(eq(variables['Build.Reason'], 'PullRequest'),eq(variables['Build.Reason'], 'IndividualCI')))
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - checkout: self
+    submodules: true
+  - script: |
+      if [ "$(Build.SourceBranch)" == "refs/heads/main" ]; then
+        echo "##vso[task.setvariable variable=SWA_ENV]Production"
+        echo "Desplegando en el ambiente de: Producción"
+      elif [ "$(Build.SourceBranch)" == "refs/heads/staging" ]; then
+        echo "##vso[task.setvariable variable=SWA_ENV]staging"
+        echo "Desplegando en el ambiente de: Staging"
+      else
+        echo "##vso[task.setvariable variable=SWA_ENV]preview"
+        echo "Desplegando en un ambiente temporal de pruebas"
+      fi
+    displayName: 'Detectar Ambiente de Destino'
+  - task: AzureStaticWebApp@0
+    inputs:
+      azure_static_web_apps_api_token: $(TOKEN_AZURE)
+      app_location: "/" # App source code path
+      api_location: "api" # Api source code path - optional
+      output_location: "build" # Built app content directory - optional
+      deployment_environment: $(SWA_ENV)

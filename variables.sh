@@ -1,0 +1,8 @@
+SUBSCRIPTION_ID="0770adc5-8cc0-4207-91c6-2b7cbaf87efb"
+RESOURCE_GROUP="rg-lab-web-static-jllancari"
+LOCATION="canadacentral"
+APP_DISPLAY_NAME="swa-zegel-portal"
+SWA_NAME="swa-zegel-portal"
+GITHUB_REPO_URL="https://github.com/<tu-usuario>/swa-zegel-portal"
+GITHUB_BRANCH="main"
+GITHUB_TOKEN="<tu-personal-access-token-con-scope-repo-y-workflow>"
